@@ -1,0 +1,22 @@
+CREATE TABLE public.users (
+	id uuid DEFAULT gen_random_uuid() NOT NULL,
+	first_name varchar(100) NOT NULL,
+	last_name varchar(100) NULL,
+	username varchar(50) NOT NULL,
+	"password" varchar(255) NOT NULL,
+	phone varchar(20) NULL,
+	is_verified bool DEFAULT false NULL,
+	is_active bool DEFAULT true NULL,
+	org_admin bool DEFAULT false NULL,
+	organisation_id uuid NULL,
+	address jsonb NULL,
+	last_login timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
+	created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
+	updated_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
+	email varchar NOT NULL,
+	is_totp bool DEFAULT false NULL,
+	secret varchar NULL,
+	otpauth_url varchar NULL,
+	CONSTRAINT users_pkey PRIMARY KEY (id),
+	CONSTRAINT users_username_key UNIQUE (username)
+);
