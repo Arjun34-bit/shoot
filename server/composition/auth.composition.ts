@@ -13,27 +13,34 @@ import { CryptoAlgorithm } from "../infrastructure/security/CryptoSecurity.ts";
 import { EnableTotp } from "../application/use-cases/auth/EnableTotp.ts";
 import { SpeakeasyOtpAuth } from "../infrastructure/security/SpeakeasyAuth.ts";
 import { VerifyToken } from "../application/use-cases/auth/Verify2FAToken.ts";
-import { ElasticUserSearchRepository } from "../infrastructure/search/UserElasticSearchRepository.ts";
+// import { ElasticUserSearchRepository } from "../infrastructure/search/UserElasticSearchRepository.ts";
 
 export async function buildAuthService(fastify: FastifyInstance) {
-    const redis = await createRedisClient();
-    const algo = "aes-256-gcm";
-    const SECRET_KEY = process.env.CRYPTO_SECRET!;
-    const userSearchRepo = new ElasticUserSearchRepository()
-    
-    const jwtToken = new JWTTokenService(fastify.jwt)
-    const userRepo = new SequlizeAuthRepo()
-    const bcryptHash = new BcryptHasher()
-    const otpService = new RedisOtpService(redis)
-    const secureTextService = new CryptoAlgorithm(algo, SECRET_KEY) // Encrypt and Decrypt Text
-    const totpService = new SpeakeasyOtpAuth() // 2FA
+  const redis = await createRedisClient();
+  const algo = "aes-256-gcm";
+  const SECRET_KEY = process.env.CRYPTO_SECRET!;
+  //   const userSearchRepo = new ElasticUserSearchRepository();
 
-    const loginUser = new UserLogin(userRepo, bcryptHash, otpService)
-    const registerUser = new UserRegister(userRepo, bcryptHash, userSearchRepo)
-    const verifyUser = new UserVerify(userRepo)
-    const verifyOTP = new UserOtpVerify(userRepo, otpService, jwtToken)
-    const enableTotp = new EnableTotp(userRepo, totpService, secureTextService) // 2FA
-    const verifyToken = new VerifyToken(userRepo, secureTextService, totpService)
+  const jwtToken = new JWTTokenService(fastify.jwt);
+  const userRepo = new SequlizeAuthRepo();
+  const bcryptHash = new BcryptHasher();
+  const otpService = new RedisOtpService(redis);
+  const secureTextService = new CryptoAlgorithm(algo, SECRET_KEY); // Encrypt and Decrypt Text
+  const totpService = new SpeakeasyOtpAuth(); // 2FA
 
-    return new AuthServiceImpl(loginUser, registerUser, verifyUser, verifyOTP, enableTotp, verifyToken)
+  const loginUser = new UserLogin(userRepo, bcryptHash, otpService);
+  const registerUser = new UserRegister(userRepo, bcryptHash);
+  const verifyUser = new UserVerify(userRepo);
+  const verifyOTP = new UserOtpVerify(userRepo, otpService, jwtToken);
+  const enableTotp = new EnableTotp(userRepo, totpService, secureTextService); // 2FA
+  const verifyToken = new VerifyToken(userRepo, secureTextService, totpService);
+
+  return new AuthServiceImpl(
+    loginUser,
+    registerUser,
+    verifyUser,
+    verifyOTP,
+    enableTotp,
+    verifyToken,
+  );
 }
