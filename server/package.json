@@ -12,7 +12,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "start": "fastify start -l info dist/app.js",
-    "dev": "fastify start -w -l info -a 0.0.0.0 -p 6000 --require ts-node/register app.ts"
+    "dev": "fastify start -w -l info -p 3000 --require ts-node/register app.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,7 +1,8 @@
-import type {  FastifyPluginAsync } from "fastify";
+/// <reference path="../../../../types/fastify.d.ts" />
+import type { FastifyPluginAsync } from "fastify";
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
-  const authController = fastify.authController
+  const authController = fastify.authController;
 
   fastify.post("/register", authController.register.bind(authController));
   fastify.post("/login", authController.login.bind(authController));
